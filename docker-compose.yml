@@ -1,15 +1,20 @@
+---
 version: '2'
+
 services:
   unifi:
     image: ryansch/unifi-rpi:latest
     container_name: unifi
-    restart: always
-    network_mode: host
-    # Uncomment the following to set java options
-    # environment:
-    #   JAVA_OPTS: -Xmx512M
+    restart: unless-stopped
+    environment:
+      JAVA_OPTS: -Xmx512M
+    ports:
+      - 8080:8080      # Device -> controller
+      - 8888:8443      # Web UI
+      # - 8843:8843      # HTTPS redirection
+      # - 8880:8880      # HTTP redirect
+      - 3478:3478/udp  # STUN
     volumes:
-      # Unifi v5.0.7 creates all of these directories (some remain empty)
       - config:/var/lib/unifi
       - log:/usr/lib/unifi/logs
       - log2:/var/log/unifi
